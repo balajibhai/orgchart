@@ -37,6 +37,14 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes }) => {
       });
     }
   };
+  const handleCancel = () => {
+    setShowNewNote({
+      show: false,
+      content: "",
+      left: 0,
+      top: 0,
+    });
+  };
   useEffect(() => {
     if (divRef.current) {
       lumelChartRef.current = new OrgChart(divRef.current, {
@@ -105,7 +113,7 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes }) => {
           top: showNewNote.top,
         }}
       >
-        {showNewNote.show && <AddNote />}
+        {showNewNote.show && <AddNote onCancel={handleCancel} />}
       </div>
     </>
   );

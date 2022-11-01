@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 
-const AddNote = () => {
+export interface AddNoteProps {
+  onCancel: Function;
+}
+
+const AddNote: React.FC<AddNoteProps> = ({ onCancel }) => {
   const [note, setNote] = useState("");
   return (
     <div className="node-editor-container">
@@ -13,7 +17,10 @@ const AddNote = () => {
         ></textarea>
       </div>
       <div className="note-editor-button-wrap">
-        <button className="note-editor-button-secondary" onClick={() => null}>
+        <button
+          className="note-editor-button-secondary"
+          onClick={() => onCancel()}
+        >
           Cancel
         </button>
         <button
