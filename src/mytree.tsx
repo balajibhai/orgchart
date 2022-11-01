@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import OrgChart from "@balkangraph/orgchart.js";
+import AddNote from "./AddNote";
+import "./AddNote.css";
 
 export interface orgChartProps {
   nodes: any[];
@@ -14,10 +16,20 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes }) => {
     top: 0,
   });
   const [lumelChart, setLumelChart] = useState<OrgChart | null>(null);
+  const [showNewNote, setShowNewNote] = useState(false);
+  const handleAddNote = () => {
+    setShowNewNote(true);
+  };
   useEffect(() => {
     if (divRef.current) {
       const chart = new OrgChart(divRef.current, {
         nodes,
+        nodeMenu: {
+          AddNote: {
+            text: "Add Note",
+            onClick: handleAddNote,
+          },
+        },
         nodeBinding: {
           field_0: "name",
           img_0: "img",
@@ -35,7 +47,7 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes }) => {
               const y = chart.getNode(nodeId).y ?? 0;
               const width = chart.getNode(nodeId).w ?? 0;
               const height = chart.getNode(nodeId).h ?? 0;
-              console.log("chart.getScale(): ", chart.getScale());
+              // console.log("chart.getScale(): ", chart.getScale());
               setTooltip({
                 show: true,
                 left: x + width * chart.getScale() + 100,
@@ -46,12 +58,12 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes }) => {
           });
           nodeElements[i].addEventListener("mouseleave", function (e) {
             e.preventDefault();
-            // setTooltip({
-            //   show: false,
-            //   left: 0,
-            //   top: 0,
-            //   content: "",
-            // });
+            setTooltip({
+              show: false,
+              left: 0,
+              top: 0,
+              content: "",
+            });
           });
         }
       });
@@ -68,6 +80,7 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes }) => {
         style={{ position: "absolute", left: toolTip.left, top: toolTip.top }}
       >
         {toolTip.show && <h1>{toolTip.content}</h1>}
+        {showNewNote && <AddNote />}
       </div>
     </>
   );
