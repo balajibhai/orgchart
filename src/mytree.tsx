@@ -9,20 +9,37 @@ export interface orgChartProps {
 
 const LumelOrgChart: React.FC<orgChartProps> = ({ nodes }) => {
   const divRef = useRef(null);
+  const lumelChartRef = useRef<OrgChart | null>(null);
   const [toolTip, setTooltip] = useState({
     show: false,
     content: "",
     left: 0,
     top: 0,
   });
-  const [lumelChart, setLumelChart] = useState<OrgChart | null>(null);
-  const [showNewNote, setShowNewNote] = useState(false);
-  const handleAddNote = () => {
-    setShowNewNote(true);
+  const [showNewNote, setShowNewNote] = useState({
+    show: false,
+    content: "",
+    left: 0,
+    top: 0,
+  });
+  const handleAddNote = (e: any, test: any) => {
+    const nodeId = e;
+    if (lumelChartRef.current) {
+      const x = lumelChartRef.current.getNode(nodeId).x ?? 0;
+      const y = lumelChartRef.current.getNode(nodeId).y ?? 0;
+      const width = lumelChartRef.current.getNode(nodeId).w ?? 0;
+      const height = lumelChartRef.current.getNode(nodeId).h ?? 0;
+      setShowNewNote({
+        show: true,
+        left: x + width * lumelChartRef.current.getScale() + 100,
+        top: y + height,
+        content: (lumelChartRef.current.get(nodeId) as any).name,
+      });
+    }
   };
   useEffect(() => {
     if (divRef.current) {
-      const chart = new OrgChart(divRef.current, {
+      lumelChartRef.current = new OrgChart(divRef.current, {
         nodes,
         nodeMenu: {
           AddNote: {
@@ -35,14 +52,15 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes }) => {
           img_0: "img",
         },
       });
-      chart.onRedraw(() => {
+      lumelChartRef.current.onRedraw(() => {
         const nodeElements = document.querySelectorAll("[data-n-id]");
         for (let i = 0; i < nodeElements.length; i++) {
           const currentNode = nodeElements[i];
           currentNode.addEventListener("mouseenter", function (e) {
             e.preventDefault();
             const nodeId = currentNode.getAttribute("data-n-id");
-            if (nodeId) {
+            const chart = lumelChartRef.current;
+            if (nodeId && chart) {
               const x = chart.getNode(nodeId).x ?? 0;
               const y = chart.getNode(nodeId).y ?? 0;
               const width = chart.getNode(nodeId).w ?? 0;
@@ -58,16 +76,15 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes }) => {
           });
           nodeElements[i].addEventListener("mouseleave", function (e) {
             e.preventDefault();
-            setTooltip({
-              show: false,
-              left: 0,
-              top: 0,
-              content: "",
-            });
+            // setTooltip({
+            //   show: false,
+            //   left: 0,
+            //   top: 0,
+            //   content: "",
+            // });
           });
         }
       });
-      setLumelChart(chart);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -80,7 +97,15 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes }) => {
         style={{ position: "absolute", left: toolTip.left, top: toolTip.top }}
       >
         {toolTip.show && <h1>{toolTip.content}</h1>}
-        {showNewNote && <AddNote />}
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          left: showNewNote.left,
+          top: showNewNote.top,
+        }}
+      >
+        {showNewNote.show && <AddNote />}
       </div>
     </>
   );
