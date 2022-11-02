@@ -1,0 +1,45 @@
+.note-view-text {
+  display: inline-block;
+  padding: 10px;
+  max-width: 216px;
+  word-break: break-word;
+}
+
+.note-view-icon-wrap:hover,
+.note-view-icon-wrap:hover {
+  cursor: pointer;
+  color: rgb(0 120 212);
+}
+
+.note-view-icon-wrap {
+  padding: 10px 10px 10px 0px;
+}
+
+.note-view {
+  background-color: white;
+  color: #333;
+  font-size: 14px;
+  transform: translateX(30px);
+  box-shadow: -1px 0px 10px rgba(0, 0, 0, 0.2);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 2px;
+}
+
+.note-view::before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: -8px;
+  top: 6px;
+  border: 9px solid transparent;
+  border-left-width: 0px;
+  border-right-color: white;
+  width: 0px;
+  height: 0px;
+}
+
+.note-view-wrap {
+  width: 300px;
+}

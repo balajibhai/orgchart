@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import OrgChart from "@balkangraph/orgchart.js";
 import AddNote from "./AddNote";
 import "./AddNote.css";
+import EditNote from "./EditNote";
 
 export interface orgChartProps {
   nodes: any[];
@@ -121,7 +122,7 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
         id="tooltip"
         style={{ position: "absolute", left: toolTip.left, top: toolTip.top }}
       >
-        {toolTip.show && <h1>{toolTip.content}</h1>}
+        {toolTip.content && <EditNote content={toolTip.content} />}
       </div>
       <div
         style={{
