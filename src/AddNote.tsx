@@ -2,9 +2,11 @@ import React, { useState } from "react";
 
 export interface AddNoteProps {
   onCancel: Function;
+  nodeID: Number;
+  onSave: Function;
 }
 
-const AddNote: React.FC<AddNoteProps> = ({ onCancel }) => {
+const AddNote: React.FC<AddNoteProps> = ({ onCancel, nodeID, onSave }) => {
   const [note, setNote] = useState("");
   return (
     <div className="node-editor-container">
@@ -27,7 +29,7 @@ const AddNote: React.FC<AddNoteProps> = ({ onCancel }) => {
           className={`note-editor-button-primary ${
             note.trim() !== "" ? "primary-active" : ""
           }`}
-          onClick={() => null}
+          onClick={() => onSave(note)}
         >
           Save
         </button>

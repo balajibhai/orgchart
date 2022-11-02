@@ -5,11 +5,13 @@ import "./AddNote.css";
 
 export interface orgChartProps {
   nodes: any[];
+  updateNotes: Function;
 }
 
-const LumelOrgChart: React.FC<orgChartProps> = ({ nodes }) => {
+const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
   const divRef = useRef(null);
   const lumelChartRef = useRef<OrgChart | null>(null);
+  const [sNodeID, setSNodeID] = useState(0);
   const [toolTip, setTooltip] = useState({
     show: false,
     content: "",
@@ -24,6 +26,7 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes }) => {
   });
   const handleAddNote = (e: any, test: any) => {
     const nodeId = e;
+    setSNodeID(nodeId);
     if (lumelChartRef.current) {
       const x = lumelChartRef.current.getNode(nodeId).x ?? 0;
       const y = lumelChartRef.current.getNode(nodeId).y ?? 0;
@@ -38,6 +41,19 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes }) => {
     }
   };
   const handleCancel = () => {
+    setShowNewNote({
+      show: false,
+      content: "",
+      left: 0,
+      top: 0,
+    });
+  };
+  const onSave = (note: string) => {
+    let nodeDetails: any = lumelChartRef.current?.get(sNodeID);
+    if (nodeDetails) {
+      nodeDetails.note = note;
+    }
+    updateNotes(nodeDetails);
     setShowNewNote({
       show: false,
       content: "",
@@ -113,7 +129,9 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes }) => {
           top: showNewNote.top,
         }}
       >
-        {showNewNote.show && <AddNote onCancel={handleCancel} />}
+        {showNewNote.show && (
+          <AddNote onCancel={handleCancel} nodeID={sNodeID} onSave={onSave} />
+        )}
       </div>
     </>
   );
