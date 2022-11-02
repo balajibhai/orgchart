@@ -20,10 +20,14 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
   });
   const [showNewNote, setShowNewNote] = useState({
     show: false,
-    content: "",
     left: 0,
     top: 0,
   });
+  useEffect(() => {
+    if (lumelChartRef.current) {
+      lumelChartRef.current.load(nodes);
+    }
+  }, [nodes]);
   const handleAddNote = (e: any, test: any) => {
     const nodeId = e;
     setSNodeID(nodeId);
@@ -36,14 +40,12 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
         show: true,
         left: x + width * lumelChartRef.current.getScale() + 100,
         top: y + height,
-        content: (lumelChartRef.current.get(nodeId) as any).name,
       });
     }
   };
   const handleCancel = () => {
     setShowNewNote({
       show: false,
-      content: "",
       left: 0,
       top: 0,
     });
@@ -56,7 +58,6 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
     updateNotes(nodeDetails);
     setShowNewNote({
       show: false,
-      content: "",
       left: 0,
       top: 0,
     });
@@ -94,7 +95,7 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
                 show: true,
                 left: x + width * chart.getScale() + 100,
                 top: y + height,
-                content: (chart.get(nodeId) as any).name,
+                content: (chart.get(nodeId) as any).note,
               });
             }
           });

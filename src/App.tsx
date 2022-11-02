@@ -53,10 +53,6 @@ const App = () => {
     },
   ]);
 
-  useEffect(() => {
-    console.log("nodes: ", nodes);
-  }, [nodes]);
-
   const updateNotes = (nodeDetails: any) => {
     console.log("nodeDetails: ", nodeDetails);
     nodes.map((item, index) => {
