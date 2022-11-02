@@ -2,11 +2,10 @@ import React, { useState } from "react";
 
 export interface AddNoteProps {
   onCancel: Function;
-  nodeID: Number;
   onSave: Function;
 }
 
-const AddNote: React.FC<AddNoteProps> = ({ onCancel, nodeID, onSave }) => {
+const AddNote: React.FC<AddNoteProps> = ({ onCancel, onSave }) => {
   const [note, setNote] = useState("");
   return (
     <div className="node-editor-container">

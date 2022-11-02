@@ -23,6 +23,11 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
     show: false,
     left: 0,
     top: 0,
+    isEdited: false,
+  });
+  const [pos, setPos] = useState({
+    left: 0,
+    top: 0,
   });
   useEffect(() => {
     if (lumelChartRef.current) {
@@ -37,18 +42,26 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
       const y = lumelChartRef.current.getNode(nodeId).y ?? 0;
       const width = lumelChartRef.current.getNode(nodeId).w ?? 0;
       const height = lumelChartRef.current.getNode(nodeId).h ?? 0;
+      const left = x + width * lumelChartRef.current.getScale() + 100;
+      const top = y + height;
       setShowNewNote({
         show: true,
-        left: x + width * lumelChartRef.current.getScale() + 100,
-        top: y + height,
+        left: left,
+        top: top,
+        isEdited: false,
+      });
+      setPos({
+        left: left,
+        top: top,
       });
     }
   };
   const handleCancel = () => {
     setShowNewNote({
       show: false,
-      left: 0,
-      top: 0,
+      left: pos.left,
+      top: pos.top,
+      isEdited: false,
     });
   };
   const onSave = (note: string) => {
@@ -59,10 +72,21 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
     updateNotes(nodeDetails);
     setShowNewNote({
       show: false,
-      left: 0,
-      top: 0,
+      left: pos.left,
+      top: pos.top,
+      isEdited: false,
     });
   };
+
+  const onEdit = (value: boolean) => {
+    setShowNewNote({
+      show: true,
+      left: pos.left,
+      top: pos.top,
+      isEdited: value,
+    });
+  };
+
   useEffect(() => {
     if (divRef.current) {
       lumelChartRef.current = new OrgChart(divRef.current, {
@@ -84,7 +108,7 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
           const currentNode = nodeElements[i];
           currentNode.addEventListener("mouseenter", function (e) {
             e.preventDefault();
-            const nodeId = currentNode.getAttribute("data-n-id");
+            const nodeId: any = currentNode.getAttribute("data-n-id");
             const chart = lumelChartRef.current;
             if (nodeId && chart) {
               const x = chart.getNode(nodeId).x ?? 0;
@@ -99,6 +123,9 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
                 content: (chart.get(nodeId) as any).note,
               });
             }
+            if (!(showNewNote.show || showNewNote.isEdited)) {
+              setSNodeID(nodeId);
+            }
           });
           nodeElements[i].addEventListener("mouseleave", function (e) {
             e.preventDefault();
@@ -112,8 +139,7 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
         }
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [showNewNote.isEdited, showNewNote.show, nodes]);
 
   return (
     <>
@@ -122,7 +148,9 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
         id="tooltip"
         style={{ position: "absolute", left: toolTip.left, top: toolTip.top }}
       >
-        {toolTip.content && <EditNote content={toolTip.content} />}
+        {toolTip.content && !showNewNote.isEdited && (
+          <EditNote content={toolTip.content} onEdit={onEdit} />
+        )}
       </div>
       <div
         style={{
@@ -131,8 +159,8 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
           top: showNewNote.top,
         }}
       >
-        {showNewNote.show && (
-          <AddNote onCancel={handleCancel} nodeID={sNodeID} onSave={onSave} />
+        {(showNewNote.show || showNewNote.isEdited) && (
+          <AddNote onCancel={handleCancel} onSave={onSave} />
         )}
       </div>
     </>
