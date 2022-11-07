@@ -29,6 +29,7 @@ const LumelOrgChart: React.FC<orgChartProps> = ({
     left: 0,
     top: 0,
     isEdited: false,
+    editableNote: "",
   });
   const [pos, setPos] = useState({
     left: 0,
@@ -41,6 +42,8 @@ const LumelOrgChart: React.FC<orgChartProps> = ({
   }, [nodes]);
   const handleAddNote = (e: any, test: any) => {
     const nodeId = e;
+    const nodeDetails: any = lumelChartRef.current?.get(nodeId);
+    const editableNote = nodeDetails?.note;
     setSNodeID(nodeId);
     if (lumelChartRef.current) {
       const x = lumelChartRef.current.getNode(nodeId).x ?? 0;
@@ -54,6 +57,7 @@ const LumelOrgChart: React.FC<orgChartProps> = ({
         left: left,
         top: top,
         isEdited: false,
+        editableNote: editableNote,
       });
       setPos({
         left: left,
@@ -67,6 +71,7 @@ const LumelOrgChart: React.FC<orgChartProps> = ({
       left: pos.left,
       top: pos.top,
       isEdited: false,
+      editableNote: showNewNote.editableNote,
     });
   };
   const onSave = (note: string) => {
@@ -80,15 +85,19 @@ const LumelOrgChart: React.FC<orgChartProps> = ({
       left: pos.left,
       top: pos.top,
       isEdited: false,
+      editableNote: showNewNote.editableNote,
     });
   };
 
   const onEdit = (value: boolean) => {
+    const nodeDetails: any = lumelChartRef.current?.get(sNodeID);
+    const editableNote = nodeDetails?.note;
     setShowNewNote({
       show: value,
       left: pos.left,
       top: pos.top,
       isEdited: value,
+      editableNote: editableNote,
     });
   };
 
@@ -174,7 +183,11 @@ const LumelOrgChart: React.FC<orgChartProps> = ({
         }}
       >
         {(showNewNote.show || showNewNote.isEdited) && (
-          <AddNote onCancel={handleCancel} onSave={onSave} />
+          <AddNote
+            onCancel={handleCancel}
+            onSave={onSave}
+            editableNote={showNewNote.editableNote}
+          />
         )}
       </div>
     </>

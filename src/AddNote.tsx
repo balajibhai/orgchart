@@ -3,10 +3,15 @@ import React, { useState } from "react";
 export interface AddNoteProps {
   onCancel: Function;
   onSave: Function;
+  editableNote: string;
 }
 
-const AddNote: React.FC<AddNoteProps> = ({ onCancel, onSave }) => {
-  const [note, setNote] = useState("");
+const AddNote: React.FC<AddNoteProps> = ({
+  onCancel,
+  onSave,
+  editableNote,
+}) => {
+  const [note, setNote] = useState(editableNote);
   return (
     <div className="node-editor-container">
       <div className="note-editor-textarea-wrap">
