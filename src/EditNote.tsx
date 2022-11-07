@@ -4,15 +4,17 @@ import "./EditNote.css";
 export interface EditNoteProps {
   content: string;
   onEdit: Function;
+  onDelete: Function;
 }
 
-const EditNote: React.FC<EditNoteProps> = ({ content, onEdit }) => {
+const EditNote: React.FC<EditNoteProps> = ({ content, onEdit, onDelete }) => {
   const onEditClick = () => {
     onEdit(true);
   };
 
   const onDeleteClick = () => {
     onEdit(false);
+    onDelete();
   };
   return (
     <div className="note-view-wrap">

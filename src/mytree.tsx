@@ -7,9 +7,14 @@ import EditNote from "./EditNote";
 export interface orgChartProps {
   nodes: any[];
   updateNotes: Function;
+  deleteNotes: Function;
 }
 
-const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
+const LumelOrgChart: React.FC<orgChartProps> = ({
+  nodes,
+  updateNotes,
+  deleteNotes,
+}) => {
   const divRef = useRef(null);
   const lumelChartRef = useRef<OrgChart | null>(null);
   const [sNodeID, setSNodeID] = useState(0);
@@ -80,11 +85,17 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
 
   const onEdit = (value: boolean) => {
     setShowNewNote({
-      show: true,
+      show: value,
       left: pos.left,
       top: pos.top,
       isEdited: value,
     });
+  };
+
+  const onDelete = () => {
+    const nodeDetails = lumelChartRef.current?.get(sNodeID);
+    deleteNotes(nodeDetails);
+    deleteNotes();
   };
 
   useEffect(() => {
@@ -115,7 +126,6 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
               const y = chart.getNode(nodeId).y ?? 0;
               const width = chart.getNode(nodeId).w ?? 0;
               const height = chart.getNode(nodeId).h ?? 0;
-              // console.log("chart.getScale(): ", chart.getScale());
               setTooltip({
                 show: true,
                 left: x + width * chart.getScale() + 100,
@@ -149,7 +159,11 @@ const LumelOrgChart: React.FC<orgChartProps> = ({ nodes, updateNotes }) => {
         style={{ position: "absolute", left: toolTip.left, top: toolTip.top }}
       >
         {toolTip.content && !showNewNote.isEdited && (
-          <EditNote content={toolTip.content} onEdit={onEdit} />
+          <EditNote
+            content={toolTip.content}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
         )}
       </div>
       <div

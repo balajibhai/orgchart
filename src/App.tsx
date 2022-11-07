@@ -8,6 +8,7 @@ const App = () => {
       name: "Denny Curtis",
       title: "CEO",
       img: "https://cdn.balkan.app/shared/2.jpg",
+      note: "",
     },
     {
       id: 2,
@@ -15,6 +16,7 @@ const App = () => {
       name: "Ashley Barnett",
       title: "Sales Manager",
       img: "https://cdn.balkan.app/shared/3.jpg",
+      note: "",
     },
     {
       id: 3463636636,
@@ -22,6 +24,7 @@ const App = () => {
       name: "Caden Ellison",
       title: "Dev Manager",
       img: "https://cdn.balkan.app/shared/4.jpg",
+      note: "",
     },
     {
       id: 4,
@@ -29,6 +32,7 @@ const App = () => {
       name: "Elliot Patel",
       title: "Sales",
       img: "https://cdn.balkan.app/shared/5.jpg",
+      note: "",
     },
     {
       id: 5,
@@ -36,6 +40,7 @@ const App = () => {
       name: "Lynn Hussain",
       title: "Sales",
       img: "https://cdn.balkan.app/shared/6.jpg",
+      note: "",
     },
     {
       id: 6,
@@ -43,6 +48,7 @@ const App = () => {
       name: "Tanner May",
       title: "Developer",
       img: "https://cdn.balkan.app/shared/7.jpg",
+      note: "",
     },
     {
       id: 7,
@@ -50,11 +56,11 @@ const App = () => {
       name: "Fran Parsons",
       title: "Developer",
       img: "https://cdn.balkan.app/shared/8.jpg",
+      note: "",
     },
   ]);
 
   const updateNotes = (nodeDetails: any) => {
-    console.log("nodeDetails: ", nodeDetails);
     nodes.map((item, index) => {
       if (item.id === nodeDetails.id) {
         nodes[index] = nodeDetails;
@@ -63,9 +69,26 @@ const App = () => {
     setNodes([...nodes]);
   };
 
+  // useEffect(() => {
+  //   console.log("nodes", nodes);
+  // }, [nodes]);
+
+  const deleteNotes = (nodeDetails: any) => {
+    nodes.map((item, index) => {
+      if (item.id === nodeDetails?.id) {
+        nodes[index].note = "";
+      }
+    });
+    setNodes([...nodes]);
+  };
+
   return (
     <div style={{ height: "100%" }}>
-      <OrgChart nodes={nodes} updateNotes={updateNotes} />
+      <OrgChart
+        nodes={nodes}
+        updateNotes={updateNotes}
+        deleteNotes={deleteNotes}
+      />
     </div>
   );
 };
